@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investment Growth AI Tool - Mini-Project 2</title>
+    <title>Investment Growth AI Tool - Interactive</title>
     <style>
-        /* Basic Reset and Variables */
+        /* Basic Reset and Variables (Same as before) */
         :root {
             --primary-color: #007bff;
             --secondary-color: #6c757d;
@@ -35,7 +35,6 @@
             padding: 20px;
         }
 
-        /* Header */
         header {
             text-align: center;
             padding: 20px 0;
@@ -54,24 +53,22 @@
             font-style: italic;
         }
 
-        /* Card Layout for Results */
-        .result-card {
+        /* --- New/Revised Form & Card Styling --- */
+
+        .input-card, .result-card {
             background-color: var(--card-background);
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             padding: 30px;
             margin-bottom: 30px;
-            border-left: 5px solid var(--success-color);
+            border-left: 5px solid var(--primary-color); /* Primary color for input card */
         }
 
-        .result-card h2 {
-            color: var(--primary-color);
-            border-bottom: 2px solid #e9ecef;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+        .result-card {
+            display: none; /* Hide results initially */
+            border-left: 5px solid var(--success-color); /* Success color for result card */
         }
 
-        /* Input & Output Sections */
         .section-title {
             font-size: 1.5em;
             color: #495057;
@@ -79,10 +76,54 @@
             margin-bottom: 15px;
         }
 
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
+        /* Form Styling */
+        .form-group {
             margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #343a40;
+        }
+
+        .form-group input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+            font-size: 1em;
+        }
+
+        /* Button Styling */
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Result Specifics */
+        .final-result {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--success-color);
+            margin-top: 10px;
+            text-align: center;
+            padding: 10px;
+            background-color: #e0ffe8;
+            border-radius: 4px;
         }
 
         .data-table th, .data-table td {
@@ -91,44 +132,14 @@
             border-bottom: 1px solid #dee2e6;
         }
 
-        .data-table th {
-            background-color: #e9ecef;
-            font-weight: bold;
-            color: #343a40;
-        }
-
-        .data-table .label {
-            width: 50%;
-        }
-
-        .final-result {
-            font-size: 2em;
-            font-weight: bold;
-            color: var(--success-color);
-            margin-top: 10px;
-            text-align: center;
-            padding: 10px;
-            background-color: #e0ffe8; /* Light success background */
-            border-radius: 4px;
-        }
-
-        /* AI Explanation Styling */
         .ai-explanation {
-            background-color: #f1f8ff; /* Light blue for AI section */
+            background-color: #f1f8ff;
             border: 1px solid #cce5ff;
             padding: 20px;
             border-radius: 6px;
         }
 
-        .ai-explanation p {
-            margin-bottom: 1em;
-        }
-
-        .ai-explanation strong {
-            color: var(--primary-color);
-        }
-
-        /* Footer */
+        /* Footer (Same as before) */
         footer {
             text-align: center;
             margin-top: 40px;
@@ -145,27 +156,41 @@
 
         <header>
             <h1>💰 Investment Growth AI Tool</h1>
-            <p>Mini-Project 2: Built with n8n + AI (Gemini/OpenAI/Claude)</p>
+            <p>Mini-Project 2: Input your data and get an AI analysis!</p>
         </header>
 
-        <div class="result-card">
+        <div class="input-card">
+            <h2 class="section-title">Enter Your Investment Details</h2>
+            <form id="investment-form">
+                <div class="form-group">
+                    <label for="initialInvestment">Initial Investment (Principal, \$)</label>
+                    <input type="number" id="initialInvestment" value="10000" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="annualContribution">Annual Contribution (Annual Savings, \$)</label>
+                    <input type="number" id="annualContribution" value="1200" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="annualRate">Annual Interest Rate (Growth, %)</label>
+                    <input type="number" id="annualRate" value="7.0" min="0" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="timeHorizon">Investment Time Horizon (Years)</label>
+                    <input type="number" id="timeHorizon" value="20" min="1" required>
+                </div>
+                <button type="submit">Generate AI Financial Report</button>
+            </form>
+        </div>
+
+        <div class="result-card" id="result-section">
             <h2>Investment Projection Report</h2>
 
             <div class="input-data">
                 <h3 class="section-title">Your Input Parameters</h3>
                 <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Parameter</th>
-                            <th>Value</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
                     <tbody id="input-data-body">
-                        <tr><td class="label">Initial Investment (Principal)</td><td>$10,000</td></tr>
-                        <tr><td class="label">Annual Contribution</td><td>$1,200</td></tr>
-                        <tr><td class="label">Annual Interest Rate (Growth)</td><td>7.0%</td></tr>
-                        <tr><td class="label">Investment Time Horizon</td><td>20 Years</td></tr>
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
 
@@ -174,23 +199,18 @@
             <div class="calculation-output">
                 <h3 class="section-title">The Calculation Result</h3>
                 <p>Based on your parameters, the estimated future value of your investment is:</p>
-                <div class="final-result" id="future-value-output">$49,252.68</div>
-                <p style="text-align: center; font-size: 0.9em; color: var(--secondary-color); margin-top: 5px;">(Calculated Future Value with Annual Compounding)</p>
+                <div class="final-result" id="future-value-output"></div>
+                <p style="text-align: center; font-size: 0.9em; color: var(--secondary-color); margin-top: 5px;">(Simulated Future Value with Annual Compounding)</p>
             </div>
-        </div>
+            
+            <hr>
 
-        <div class="result-card ai-explanation">
-            <h2>🧠 AI-Powered Analysis and Next Steps</h2>
-            <p>The core value of this tool is the plain-English explanation, generated by the **Large Language Model (LLM) node** in the n8n workflow.</p>
-
-            <div id="ai-output">
-                <p>Hello! The result of **$49,252.68** shows the incredible power of **compound interest** over a long time horizon. Here's a quick breakdown:</p>
-
-                <p><strong>Your contribution:</strong> You invested a total of $10,000 (initial) + ($1,200 x 20 years) = **$34,000**.</p>
-
-                <p><strong>Your profit:</strong> The remaining $15,252.68 is the **money your money made** by reinvesting its earnings (the "compounding" effect). This is the key concept!</p>
-
-                <p><strong>💡 Next Step & Budget Tip:</strong> Given this strong foundation, consider **increasing your annual contribution** by just 1% each year. This small increase, when compounded, would likely push your final value over $50,000, accelerating your journey toward financial independence. Great work!</p>
+            <div class="ai-explanation">
+                <h2>🧠 AI-Powered Analysis and Next Steps</h2>
+                <p>NOTE: In the full project, these words are generated by your **n8n/LLM Workflow** using the input data. For this static HTML, we'll use a placeholder.</p>
+                <div id="ai-output">
+                    <p>The Large Language Model would take your inputs (Initial: <span id="displayInitial"></span>, Annual: <span id="displayAnnual"></span>, Rate: <span id="displayRate"></span>%, Years: <span id="displayYears"></span>) and the calculated result (<span id="displayResult"></span>) to generate a personalized analysis here. The analysis would include practical context, two budget tips, and a next step, demonstrating the value of your AI tool!</p>
+                </div>
             </div>
         </div>
 
@@ -199,5 +219,63 @@
         </footer>
     </div>
 
+    <script>
+        document.getElementById('investment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // 1. Capture Inputs
+            const initial = parseFloat(document.getElementById('initialInvestment').value);
+            const annual = parseFloat(document.getElementById('annualContribution').value);
+            const rate = parseFloat(document.getElementById('annualRate').value) / 100;
+            const years = parseInt(document.getElementById('timeHorizon').value);
+            const compoundingPeriods = 1; // Assuming annual compounding (n=1)
+
+            // 2. Perform a Basic Future Value Calculation (Simulating the n8n Logic)
+            // FV = P(1 + r/n)^(nt) + PMT * [((1 + r/n)^(nt) - 1) / (r/n)]
+            
+            // Future Value of Initial Principal
+            const fvPrincipal = initial * Math.pow((1 + rate / compoundingPeriods), (compoundingPeriods * years));
+            
+            // Future Value of Annuity (Annual Contributions)
+            const fvAnnuity = annual * (Math.pow((1 + rate / compoundingPeriods), (compoundingPeriods * years)) - 1) / (rate / compoundingPeriods);
+
+            // Total Future Value
+            let totalFV = fvPrincipal + fvAnnuity;
+
+            // Simple formatting for display
+            const formattedFV = totalFV.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
+            const formattedInitial = initial.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
+            const formattedAnnual = annual.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
+            
+            // 3. Populate Input Data Table
+            const inputBody = document.getElementById('input-data-body');
+            inputBody.innerHTML = `
+                <tr><td>Initial Investment (Principal)</td><td>${formattedInitial}</td></tr>
+                <tr><td>Annual Contribution</td><td>${formattedAnnual}</td></tr>
+                <tr><td>Annual Interest Rate (Growth)</td><td>${(rate * 100).toFixed(1)}%</td></tr>
+                <tr><td>Investment Time Horizon</td><td>${years} Years</td></tr>
+            `;
+
+            // 4. Display Calculation Result
+            document.getElementById('future-value-output').textContent = formattedFV;
+
+            // 5. Update AI Placeholder text with the numbers
+            document.getElementById('displayInitial').textContent = formattedInitial;
+            document.getElementById('displayAnnual').textContent = formattedAnnual;
+            document.getElementById('displayRate').textContent = (rate * 100).toFixed(1);
+            document.getElementById('displayYears').textContent = years;
+            document.getElementById('displayResult').textContent = formattedFV;
+
+            // 6. Show the results section
+            document.getElementById('result-section').style.display = 'block';
+
+            // Scroll to the results for better UX
+            document.getElementById('result-section').scrollIntoView({ behavior: 'smooth' });
+
+            // Note for Demo: You would pause here to explain that in the real project, 
+            // the n8n workflow uses these inputs and the result to generate the custom text 
+            // for the AI-Output section, which is the main deliverable.
+        });
+    </script>
 </body>
 </html>
