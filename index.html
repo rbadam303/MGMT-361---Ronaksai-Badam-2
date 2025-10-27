@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Growth AI Tool - Mini-Project 2</title>
+    <style>
+        /* Basic Reset and Variables */
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --background-color: #f8f9fa;
+            --card-background: #ffffff;
+            --font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--background-color);
+            color: #343a40;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 3px solid var(--primary-color);
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            font-size: 2.2em;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: var(--secondary-color);
+            font-style: italic;
+        }
+
+        /* Card Layout for Results */
+        .result-card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--success-color);
+        }
+
+        .result-card h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Input & Output Sections */
+        .section-title {
+            font-size: 1.5em;
+            color: #495057;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .data-table th {
+            background-color: #e9ecef;
+            font-weight: bold;
+            color: #343a40;
+        }
+
+        .data-table .label {
+            width: 50%;
+        }
+
+        .final-result {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--success-color);
+            margin-top: 10px;
+            text-align: center;
+            padding: 10px;
+            background-color: #e0ffe8; /* Light success background */
+            border-radius: 4px;
+        }
+
+        /* AI Explanation Styling */
+        .ai-explanation {
+            background-color: #f1f8ff; /* Light blue for AI section */
+            border: 1px solid #cce5ff;
+            padding: 20px;
+            border-radius: 6px;
+        }
+
+        .ai-explanation p {
+            margin-bottom: 1em;
+        }
+
+        .ai-explanation strong {
+            color: var(--primary-color);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--secondary-color);
+            font-size: 0.9em;
+            color: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <header>
+            <h1>💰 Investment Growth AI Tool</h1>
+            <p>Mini-Project 2: Built with n8n + AI (Gemini/OpenAI/Claude)</p>
+        </header>
+
+        <div class="result-card">
+            <h2>Investment Projection Report</h2>
+
+            <div class="input-data">
+                <h3 class="section-title">Your Input Parameters</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody id="input-data-body">
+                        <tr><td class="label">Initial Investment (Principal)</td><td>$10,000</td></tr>
+                        <tr><td class="label">Annual Contribution</td><td>$1,200</td></tr>
+                        <tr><td class="label">Annual Interest Rate (Growth)</td><td>7.0%</td></tr>
+                        <tr><td class="label">Investment Time Horizon</td><td>20 Years</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <hr>
+
+            <div class="calculation-output">
+                <h3 class="section-title">The Calculation Result</h3>
+                <p>Based on your parameters, the estimated future value of your investment is:</p>
+                <div class="final-result" id="future-value-output">$49,252.68</div>
+                <p style="text-align: center; font-size: 0.9em; color: var(--secondary-color); margin-top: 5px;">(Calculated Future Value with Annual Compounding)</p>
+            </div>
+        </div>
+
+        <div class="result-card ai-explanation">
+            <h2>🧠 AI-Powered Analysis and Next Steps</h2>
+            <p>The core value of this tool is the plain-English explanation, generated by the **Large Language Model (LLM) node** in the n8n workflow.</p>
+
+            <div id="ai-output">
+                <p>Hello! The result of **$49,252.68** shows the incredible power of **compound interest** over a long time horizon. Here's a quick breakdown:</p>
+
+                <p><strong>Your contribution:</strong> You invested a total of $10,000 (initial) + ($1,200 x 20 years) = **$34,000**.</p>
+
+                <p><strong>Your profit:</strong> The remaining $15,252.68 is the **money your money made** by reinvesting its earnings (the "compounding" effect). This is the key concept!</p>
+
+                <p><strong>💡 Next Step & Budget Tip:</strong> Given this strong foundation, consider **increasing your annual contribution** by just 1% each year. This small increase, when compounded, would likely push your final value over $50,000, accelerating your journey toward financial independence. Great work!</p>
+            </div>
+        </div>
+
+        <footer>
+            <p>Tool created for the Mini-Project 2 Assignment. Workflow logic is handled by n8n/Make and an external AI API.</p>
+        </footer>
+    </div>
+
+</body>
+</html>
