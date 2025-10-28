@@ -3,278 +3,328 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investment Growth AI Tool - Interactive</title>
+    <title>AI Finance Mini-Project 2</title>
+    <!-- Load Tailwind CSS for modern styling and responsiveness -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#007bff',
+                        'success': '#28a745',
+                        'background-light': '#f8f9fa',
+                        'card-bg': '#ffffff',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
     <style>
-        /* Basic Reset and Variables (Same as before) */
-        :root {
-            --primary-color: #007bff;
-            --secondary-color: #6c757d;
-            --success-color: #28a745;
-            --background-color: #f8f9fa;
-            --card-background: #ffffff;
-            --font-family: 'Arial', sans-serif;
+        /* Custom styles for better readability and structure */
+        .page-content {
+            display: none; /* All content pages are hidden by default */
         }
-
-        body {
-            font-family: var(--font-family);
-            background-color: var(--background-color);
-            color: #343a40;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-
-        header {
-            text-align: center;
-            padding: 20px 0;
-            border-bottom: 3px solid var(--primary-color);
-            margin-bottom: 30px;
-        }
-
-        header h1 {
-            color: var(--primary-color);
-            font-size: 2.2em;
-            margin-bottom: 5px;
-        }
-
-        header p {
-            color: var(--secondary-color);
-            font-style: italic;
-        }
-
-        /* --- New/Revised Form & Card Styling --- */
-
-        .input-card, .result-card {
-            background-color: var(--card-background);
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            margin-bottom: 30px;
-            border-left: 5px solid var(--primary-color); /* Primary color for input card */
-        }
-
-        .result-card {
-            display: none; /* Hide results initially */
-            border-left: 5px solid var(--success-color); /* Success color for result card */
-        }
-
-        .section-title {
-            font-size: 1.5em;
-            color: #495057;
-            margin-top: 0;
-            margin-bottom: 15px;
-        }
-
-        /* Form Styling */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
+        .active-page {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #343a40;
         }
-
-        .form-group input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            box-sizing: border-box; /* Include padding and border in the element's total width and height */
-            font-size: 1em;
+        .input-field {
+            @apply block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition duration-150;
         }
-
-        /* Button Styling */
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1.1em;
-            transition: background-color 0.3s ease;
-            width: 100%;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Result Specifics */
-        .final-result {
-            font-size: 2em;
-            font-weight: bold;
-            color: var(--success-color);
-            margin-top: 10px;
-            text-align: center;
-            padding: 10px;
-            background-color: #e0ffe8;
-            border-radius: 4px;
-        }
-
-        .data-table th, .data-table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .ai-explanation {
-            background-color: #f1f8ff;
-            border: 1px solid #cce5ff;
-            padding: 20px;
-            border-radius: 6px;
-        }
-
-        /* Footer (Same as before) */
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px dashed var(--secondary-color);
-            font-size: 0.9em;
-            color: var(--secondary-color);
+        .result-box {
+            @apply p-4 mt-3 rounded-lg text-center font-semibold text-2xl tracking-wider;
         }
     </style>
 </head>
-<body>
+<body class="bg-background-light font-sans min-h-screen flex flex-col">
 
-    <div class="container">
-
-        <header>
-            <h1>💰 Investment Growth AI Tool</h1>
-            <p>Mini-Project 2: Input your data and get an AI analysis!</p>
-        </header>
-
-        <div class="input-card">
-            <h2 class="section-title">Enter Your Investment Details</h2>
-            <form id="investment-form">
-                <div class="form-group">
-                    <label for="initialInvestment">Initial Investment (Principal, \$)</label>
-                    <input type="number" id="initialInvestment" value="10000" min="0" required>
-                </div>
-                <div class="form-group">
-                    <label for="annualContribution">Annual Contribution (Annual Savings, \$)</label>
-                    <input type="number" id="annualContribution" value="1200" min="0" required>
-                </div>
-                <div class="form-group">
-                    <label for="annualRate">Annual Interest Rate (Growth, %)</label>
-                    <input type="number" id="annualRate" value="7.0" min="0" step="0.1" required>
-                </div>
-                <div class="form-group">
-                    <label for="timeHorizon">Investment Time Horizon (Years)</label>
-                    <input type="number" id="timeHorizon" value="20" min="1" required>
-                </div>
-                <button type="submit">Generate AI Financial Report</button>
-            </form>
+    <!-- Header and Navigation -->
+    <header class="bg-card-bg shadow-md p-4 sticky top-0 z-10">
+        <div class="container mx-auto max-w-4xl flex flex-wrap justify-between items-center">
+            <h1 class="text-xl font-bold text-primary">AI Finance Tool Demo</h1>
+            <nav class="space-x-2 md:space-x-4 flex mt-2 md:mt-0">
+                <button onclick="showPage('home')" class="nav-button p-2 text-sm md:text-base rounded-lg hover:bg-gray-100 transition duration-150">Home</button>
+                <button onclick="showPage('loop1')" class="nav-button p-2 text-sm md:text-base rounded-lg hover:bg-gray-100 transition duration-150">Loop 1 (Basic)</button>
+                <button onclick="showPage('loop2')" class="nav-button p-2 text-sm md:text-base rounded-lg hover:bg-gray-100 transition duration-150">Loop 2 (Enhanced)</button>
+                <button onclick="showPage('loop3')" class="nav-button p-2 text-sm md:text-base rounded-lg hover:bg-gray-100 transition duration-150">Loop 3 (Stand Out)</button>
+            </nav>
         </div>
+    </header>
 
-        <div class="result-card" id="result-section">
-            <h2>Investment Projection Report</h2>
+    <main class="container mx-auto max-w-4xl p-4 md:p-8 flex-grow">
 
-            <div class="input-data">
-                <h3 class="section-title">Your Input Parameters</h3>
-                <table class="data-table">
-                    <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
-                    <tbody id="input-data-body">
-                        </tbody>
-                </table>
-            </div>
-
-            <hr>
-
-            <div class="calculation-output">
-                <h3 class="section-title">The Calculation Result</h3>
-                <p>Based on your parameters, the estimated future value of your investment is:</p>
-                <div class="final-result" id="future-value-output"></div>
-                <p style="text-align: center; font-size: 0.9em; color: var(--secondary-color); margin-top: 5px;">(Simulated Future Value with Annual Compounding)</p>
-            </div>
-            
-            <hr>
-
-            <div class="ai-explanation">
-                <h2>🧠 AI-Powered Analysis and Next Steps</h2>
-                <p>NOTE: In the full project, these words are generated by your **n8n/LLM Workflow** using the input data. For this static HTML, we'll use a placeholder.</p>
-                <div id="ai-output">
-                    <p>The Large Language Model would take your inputs (Initial: <span id="displayInitial"></span>, Annual: <span id="displayAnnual"></span>, Rate: <span id="displayRate"></span>%, Years: <span id="displayYears"></span>) and the calculated result (<span id="displayResult"></span>) to generate a personalized analysis here. The analysis would include practical context, two budget tips, and a next step, demonstrating the value of your AI tool!</p>
+        <!-- 1. HOME/NAVIGATION PAGE -->
+        <section id="home" class="page-content active-page">
+            <div class="bg-white p-6 md:p-10 rounded-xl shadow-lg border-l-4 border-primary">
+                <h2 class="text-3xl font-extrabold text-gray-800 mb-4">Mini-Project 2: AI Financial Workflow</h2>
+                <p class="text-lg text-gray-600 mb-6">This demo showcases the evolution of the **Investment Growth Projector** tool, aligning with the three assignment loops. The AI-generated analysis (explanations, tips, next steps) is the output of the n8n/LLM workflow.</p>
+                
+                <div class="space-y-4">
+                    <div class="bg-background-light p-4 rounded-lg border border-primary/30">
+                        <h3 class="text-xl font-semibold text-primary">Loop 1: Basic AI Workflow (Pick a Pain Point)</h3>
+                        <p class="text-gray-700">Simple compounding calculator + basic AI explanation.</p>
+                        <button onclick="showPage('loop1')" class="mt-2 text-sm text-primary hover:text-blue-700 font-medium">View Basic Tool →</button>
+                    </div>
+                    <div class="bg-background-light p-4 rounded-lg border border-primary/30">
+                        <h3 class="text-xl font-semibold text-primary">Loop 2: Enhanced (Make It Actually Helpful)</h3>
+                        <p class="text-gray-700">Adds visualization/comparison: Scenario vs. Base Case.</p>
+                        <button onclick="showPage('loop2')" class="mt-2 text-sm text-primary hover:text-blue-700 font-medium">View Scenario Comparison →</button>
+                    </div>
+                    <div class="bg-background-light p-4 rounded-lg border border-primary/30">
+                        <h3 class="text-xl font-semibold text-primary">Loop 3: Stand Out (Real Return After Inflation)</h3>
+                        <p class="text-gray-700">Advanced calculation: Adjusts Future Value for inflation to show purchasing power.</p>
+                        <button onclick="showPage('loop3')" class="mt-2 text-sm text-primary hover:text-blue-700 font-medium">View Inflation Reality Check →</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <footer>
-            <p>Tool created for the Mini-Project 2 Assignment. Workflow logic is handled by n8n/Make and an external AI API.</p>
-        </footer>
-    </div>
+        <!-- 2. LOOP 1: BASIC INVESTMENT GROWTH PROJECTOR -->
+        <section id="loop1" class="page-content">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Loop 1: Basic Investment Growth Projector</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Input Form -->
+                <div class="bg-card-bg p-6 rounded-xl shadow-lg border-l-4 border-primary">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4">Input Parameters</h3>
+                    <form id="form-loop1" onsubmit="event.preventDefault(); calculateLoop1()">
+                        <div class="space-y-4">
+                            <div><label class="block text-sm font-medium">Initial Investment ($)</label><input type="number" id="l1_initial" value="10000" min="0" class="input-field"></div>
+                            <div><label class="block text-sm font-medium">Annual Contribution ($)</label><input type="number" id="l1_annual" value="1200" min="0" class="input-field"></div>
+                            <div><label class="block text-sm font-medium">Annual Rate of Return (%)</label><input type="number" id="l1_rate" value="7.0" min="0" step="0.1" class="input-field"></div>
+                            <div><label class="block text-sm font-medium">Time Horizon (Years)</label><input type="number" id="l1_years" value="20" min="1" class="input-field"></div>
+                        </div>
+                        <button type="submit" class="w-full mt-6 bg-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition">Calculate & Get AI Analysis</button>
+                    </form>
+                </div>
+
+                <!-- Output/AI Analysis -->
+                <div id="output-loop1" class="bg-card-bg p-6 rounded-xl shadow-lg border-l-4 border-success hidden">
+                    <h3 class="text-xl font-semibold text-success mb-4">Future Value Result</h3>
+                    <p class="text-gray-600">The total estimated value of your investment is:</p>
+                    <div id="l1_result" class="result-box bg-success/10 text-success">$0.00</div>
+                    
+                    <h4 class="text-lg font-semibold text-primary mt-6 mb-3">🧠 AI-Powered Analysis (n8n Output)</h4>
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 text-gray-700">
+                        <p>The Large Language Model would take your inputs and the result of <span id="l1_display_result" class="font-bold text-success">$0.00</span> to generate a custom analysis here.</p>
+                        <ul class="list-disc list-inside mt-2 text-sm">
+                            <li>**Why:** Explanation of compounding in plain English.</li>
+                            <li>**Tip:** A specific budget or finance tip.</li>
+                            <li>**Next Step:** Actionable advice based on the result.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. LOOP 2: ENHANCED - SCENARIO COMPARISON -->
+        <section id="loop2" class="page-content">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Loop 2: Enhanced - Scenario Comparison</h2>
+
+            <div class="bg-card-bg p-6 rounded-xl shadow-lg border-l-4 border-primary">
+                <p class="mb-4 text-gray-700">Compare a Base Case against a Scenario (e.g., increasing contributions by 20%).</p>
+                <form id="form-loop2" onsubmit="event.preventDefault(); calculateLoop2()">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div><label class="block text-sm font-medium">Initial Investment ($)</label><input type="number" id="l2_initial" value="5000" min="0" class="input-field"></div>
+                        <div><label class="block text-sm font-medium">Time Horizon (Years)</label><input type="number" id="l2_years" value="15" min="1" class="input-field"></div>
+                        <div><label class="block text-sm font-medium">Base Annual Contribution ($)</label><input type="number" id="l2_base_annual" value="2400" min="0" class="input-field"></div>
+                        <div><label class="block text-sm font-medium">Base Annual Rate (%)</label><input type="number" id="l2_rate" value="8.0" min="0" step="0.1" class="input-field"></div>
+                    </div>
+                    <button type="submit" class="w-full mt-6 bg-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition">Compare Scenarios</button>
+                </form>
+            </div>
+
+            <!-- Output -->
+            <div id="output-loop2" class="mt-6 bg-card-bg p-6 rounded-xl shadow-lg border-l-4 border-success hidden">
+                <h3 class="text-xl font-semibold text-success mb-4">Scenario Comparison</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="p-4 rounded-lg bg-gray-50 border">
+                        <p class="font-medium text-gray-700">Base Case ($<span id="l2_base_annual_display">2,400</span> Annual)</p>
+                        <div id="l2_result_base" class="result-box text-lg text-gray-800 bg-white shadow-inner">$0.00</div>
+                    </div>
+                    <div class="p-4 rounded-lg bg-success/10 border border-success/50">
+                        <p class="font-medium text-success">Scenario (+20% Annual Contribution)</p>
+                        <div id="l2_result_scenario" class="result-box text-xl text-success bg-white shadow-inner">$0.00</div>
+                    </div>
+                </div>
+                
+                <h4 class="text-lg font-semibold text-primary mt-6 mb-3">🧠 AI Difference Analysis</h4>
+                <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 text-gray-700">
+                    <p>The AI would highlight the **difference in value** (<span id="l2_difference" class="font-bold text-primary">$0.00</span>) and explain the long-term impact of that small increase in savings (the "Make It Actually Helpful" feature).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. LOOP 3: STAND OUT - INFLATION REALITY CHECK -->
+        <section id="loop3" class="page-content">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Loop 3: Stand Out - Real Return After Inflation</h2>
+
+            <div class="bg-card-bg p-6 rounded-xl shadow-lg border-l-4 border-primary">
+                <p class="mb-4 text-gray-700">Calculate your future investment value, and then adjust it for inflation to determine its real purchasing power.</p>
+                <form id="form-loop3" onsubmit="event.preventDefault(); calculateLoop3()">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div><label class="block text-sm font-medium">Initial Investment ($)</label><input type="number" id="l3_initial" value="10000" min="0" class="input-field"></div>
+                        <div><label class="block text-sm font-medium">Time Horizon (Years)</label><input type="number" id="l3_years" value="20" min="1" class="input-field"></div>
+                        <div><label class="block text-sm font-medium">Annual Contribution ($)</label><input type="number" id="l3_annual" value="1200" min="0" class="input-field"></div>
+                        <div><label class="block text-sm font-medium">Annual Rate of Return (%)</label><input type="number" id="l3_rate" value="7.0" min="0" step="0.1" class="input-field"></div>
+                        <div><label class="block text-sm font-medium">Expected Annual Inflation (%)</label><input type="number" id="l3_inflation" value="3.0" min="0" step="0.1" class="input-field"></div>
+                    </div>
+                    <button type="submit" class="w-full mt-6 bg-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition">Check Real Return</button>
+                </form>
+            </div>
+
+            <!-- Output -->
+            <div id="output-loop3" class="mt-6 bg-card-bg p-6 rounded-xl shadow-lg border-l-4 border-success hidden">
+                <h3 class="text-xl font-semibold text-success mb-4">Inflation-Adjusted Results</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="p-4 rounded-lg bg-gray-50 border">
+                        <p class="font-medium text-gray-700">Nominal Future Value (Raw Dollars)</p>
+                        <div id="l3_result_nominal" class="result-box text-xl text-gray-800 bg-white shadow-inner">$0.00</div>
+                    </div>
+                    <div class="p-4 rounded-lg bg-success/10 border border-success/50">
+                        <p class="font-medium text-success">Real Future Value (Today's Purchasing Power)</p>
+                        <div id="l3_result_real" class="result-box text-xl text-success bg-white shadow-inner">$0.00</div>
+                    </div>
+                </div>
+
+                <h4 class="text-lg font-semibold text-primary mt-6 mb-3">🧠 AI Inflation Reality Translator</h4>
+                <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 text-gray-700">
+                    <p>The AI would use the calculated **Nominal** and **Real** values to explain why investment returns must exceed inflation, offering a "real-world" comparison (e.g., "The $X will feel like only $Y in purchasing power").</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="mt-auto p-4 text-center text-sm text-gray-500 border-t">
+        <p>Mini-Project 2 Assignment. Frontend interface for n8n/LLM workflow integration.</p>
+    </footer>
 
     <script>
-        document.getElementById('investment-form').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // --- Core Application Logic (Routing and Calculations) ---
 
-            // 1. Capture Inputs
-            const initial = parseFloat(document.getElementById('initialInvestment').value);
-            const annual = parseFloat(document.getElementById('annualContribution').value);
-            const rate = parseFloat(document.getElementById('annualRate').value) / 100;
-            const years = parseInt(document.getElementById('timeHorizon').value);
-            const compoundingPeriods = 1; // Assuming annual compounding (n=1)
+        // State to track the current page
+        let currentPage = 'home';
 
-            // 2. Perform a Basic Future Value Calculation (Simulating the n8n Logic)
+        /**
+         * Switches the active page content.
+         * @param {string} pageId - The ID of the page section to show.
+         */
+        function showPage(pageId) {
+            document.querySelectorAll('.page-content').forEach(section => {
+                section.classList.remove('active-page');
+                section.classList.add('hidden');
+            });
+            document.getElementById(pageId).classList.add('active-page');
+            document.getElementById(pageId).classList.remove('hidden');
+            currentPage = pageId;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Helper function for Compound Interest (Future Value) calculation
+        function calculateFV(P, PMT, r, t, n = 1) {
+            // P = Principal (Initial)
+            // PMT = Periodic Payment (Annual Contribution)
+            // r = Annual Rate
+            // t = Time (Years)
+            // n = Compounding periods per year (kept at 1 for simplicity)
+            
+            if (r === 0) {
+                return P + (PMT * t); // Handle zero rate case
+            }
+            
             // FV = P(1 + r/n)^(nt) + PMT * [((1 + r/n)^(nt) - 1) / (r/n)]
+            const ratePerPeriod = r / n;
+            const totalPeriods = n * t;
+
+            // 1. Future Value of Initial Principal
+            const fvPrincipal = P * Math.pow((1 + ratePerPeriod), totalPeriods);
             
-            // Future Value of Initial Principal
-            const fvPrincipal = initial * Math.pow((1 + rate / compoundingPeriods), (compoundingPeriods * years));
+            // 2. Future Value of Annuity (Contributions)
+            const fvAnnuity = PMT * (Math.pow((1 + ratePerPeriod), totalPeriods) - 1) / ratePerPeriod;
+
+            return fvPrincipal + fvAnnuity;
+        }
+
+        // Helper function to format currency
+        function formatCurrency(value) {
+            return value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
+        }
+
+
+        // --- Loop 1: Basic Calculation Logic ---
+        function calculateLoop1() {
+            const P = parseFloat(document.getElementById('l1_initial').value);
+            const PMT = parseFloat(document.getElementById('l1_annual').value);
+            const r = parseFloat(document.getElementById('l1_rate').value) / 100;
+            const t = parseInt(document.getElementById('l1_years').value);
+
+            if (P < 0 || PMT < 0 || r < 0 || t < 1) return; // Simple validation
+
+            const fv = calculateFV(P, PMT, r, t);
             
-            // Future Value of Annuity (Annual Contributions)
-            const fvAnnuity = annual * (Math.pow((1 + rate / compoundingPeriods), (compoundingPeriods * years)) - 1) / (rate / compoundingPeriods);
+            document.getElementById('l1_result').textContent = formatCurrency(fv);
+            document.getElementById('l1_display_result').textContent = formatCurrency(fv);
+            document.getElementById('output-loop1').classList.remove('hidden');
+            document.getElementById('output-loop1').scrollIntoView({ behavior: 'smooth' });
+        }
 
-            // Total Future Value
-            let totalFV = fvPrincipal + fvAnnuity;
 
-            // Simple formatting for display
-            const formattedFV = totalFV.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
-            const formattedInitial = initial.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
-            const formattedAnnual = annual.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
+        // --- Loop 2: Scenario Comparison Logic ---
+        function calculateLoop2() {
+            const P = parseFloat(document.getElementById('l2_initial').value);
+            const r = parseFloat(document.getElementById('l2_rate').value) / 100;
+            const t = parseInt(document.getElementById('l2_years').value);
+            const PMT_base = parseFloat(document.getElementById('l2_base_annual').value);
             
-            // 3. Populate Input Data Table
-            const inputBody = document.getElementById('input-data-body');
-            inputBody.innerHTML = `
-                <tr><td>Initial Investment (Principal)</td><td>${formattedInitial}</td></tr>
-                <tr><td>Annual Contribution</td><td>${formattedAnnual}</td></tr>
-                <tr><td>Annual Interest Rate (Growth)</td><td>${(rate * 100).toFixed(1)}%</td></tr>
-                <tr><td>Investment Time Horizon</td><td>${years} Years</td></tr>
-            `;
+            if (P < 0 || r < 0 || t < 1 || PMT_base < 0) return; // Simple validation
 
-            // 4. Display Calculation Result
-            document.getElementById('future-value-output').textContent = formattedFV;
+            // Base Case
+            const fv_base = calculateFV(P, PMT_base, r, t);
 
-            // 5. Update AI Placeholder text with the numbers
-            document.getElementById('displayInitial').textContent = formattedInitial;
-            document.getElementById('displayAnnual').textContent = formattedAnnual;
-            document.getElementById('displayRate').textContent = (rate * 100).toFixed(1);
-            document.getElementById('displayYears').textContent = years;
-            document.getElementById('displayResult').textContent = formattedFV;
+            // Scenario Case: 20% increase in annual contribution
+            const PMT_scenario = PMT_base * 1.20;
+            const fv_scenario = calculateFV(P, PMT_scenario, r, t);
+            
+            const difference = fv_scenario - fv_base;
 
-            // 6. Show the results section
-            document.getElementById('result-section').style.display = 'block';
+            document.getElementById('l2_base_annual_display').textContent = PMT_base.toLocaleString('en-US');
+            document.getElementById('l2_result_base').textContent = formatCurrency(fv_base);
+            document.getElementById('l2_result_scenario').textContent = formatCurrency(fv_scenario);
+            document.getElementById('l2_difference').textContent = formatCurrency(difference);
+            document.getElementById('output-loop2').classList.remove('hidden');
+            document.getElementById('output-loop2').scrollIntoView({ behavior: 'smooth' });
+        }
 
-            // Scroll to the results for better UX
-            document.getElementById('result-section').scrollIntoView({ behavior: 'smooth' });
 
-            // Note for Demo: You would pause here to explain that in the real project, 
-            // the n8n workflow uses these inputs and the result to generate the custom text 
-            // for the AI-Output section, which is the main deliverable.
+        // --- Loop 3: Real Return After Inflation Logic ---
+        function calculateLoop3() {
+            const P = parseFloat(document.getElementById('l3_initial').value);
+            const PMT = parseFloat(document.getElementById('l3_annual').value);
+            const r = parseFloat(document.getElementById('l3_rate').value) / 100;
+            const t = parseInt(document.getElementById('l3_years').value);
+            const i = parseFloat(document.getElementById('l3_inflation').value) / 100; // Inflation Rate
+
+            if (P < 0 || PMT < 0 || r < 0 || t < 1 || i < 0) return; // Simple validation
+
+            // 1. Calculate Nominal Future Value (FV)
+            const nominalFV = calculateFV(P, PMT, r, t);
+
+            // 2. Calculate Real Future Value (Real FV = Nominal FV / (1 + i)^t)
+            const realFV = nominalFV / Math.pow((1 + i), t);
+
+            document.getElementById('l3_result_nominal').textContent = formatCurrency(nominalFV);
+            document.getElementById('l3_result_real').textContent = formatCurrency(realFV);
+            document.getElementById('output-loop3').classList.remove('hidden');
+            document.getElementById('output-loop3').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initialize the app to show the home page
+        document.addEventListener('DOMContentLoaded', () => {
+            showPage('home');
         });
     </script>
 </body>
